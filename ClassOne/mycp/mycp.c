@@ -21,6 +21,8 @@ int mycp(int fd_r, int fd_w) {
         
     }
 
+    free(buffer);
+
     return r;
 
 }
