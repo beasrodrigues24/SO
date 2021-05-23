@@ -25,6 +25,9 @@ int main(int argc, char * argv[]) {
                 dup2(input_fd, STDIN_FILENO);
                 dup2(output_fd, STDOUT_FILENO);
 
+                close(input_fd);
+                close(output_fd);
+
                 if (fork() == 0) {
 
                     execvp(argv[5], argv + 5);
