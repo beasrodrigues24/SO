@@ -1,0 +1,4 @@
+  47 /etc/passwd
+   1 saida.txt
+   0 errors.txt
+  48 total
