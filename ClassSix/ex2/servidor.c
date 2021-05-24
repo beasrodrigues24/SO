@@ -9,7 +9,7 @@
 
 int servidor() {
 
-    int fd_log = open("log.txt", O_TRUNC | O_WRONLY, 0666);
+    int fd_log = open("log.txt", O_CREAT | O_WRONLY, 0644);
     if (fd_log == -1) {
 
         perror("open");
@@ -21,15 +21,17 @@ int servidor() {
     char * buffer = malloc(sizeof(char) * BUFFER_SIZE);
 
     int fd_fifo;
-    while((fd_fifo = open("fifo", O_RDONLY))) {
+    while((fd_fifo = open("fifo", O_RDONLY)) > 0) {
 
-        while ((bytes_read = read(fd_fifo, buffer, BUFFER_SIZE) > 0))
+        while ((bytes_read = read(fd_fifo, buffer, BUFFER_SIZE)) > 0) 
+
             if ((bytes_written = write(fd_log, buffer, bytes_read)) <= 0) {
 
                 perror("write");
                 exit(1);
 
             }
+        
 
         close(fd_fifo);
 
@@ -44,7 +46,7 @@ int servidor() {
 
 int main() {
 
-    if (mkfifo("fifo", 0666) < 0) {
+    if (mkfifo("fifo", 0644) < 0) {
 
         perror("fifo");
         exit(1);

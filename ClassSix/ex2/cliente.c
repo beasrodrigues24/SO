@@ -12,7 +12,7 @@ int main(int argc, char * argv[]) {
 
     if (argc > 1) {
 
-        int fd_fifo = open("fifo", O_TRUNC | O_WRONLY, 0666);
+        int fd_fifo = open("fifo", O_WRONLY, 0666);
         if (fd_fifo == -1) {
 
             perror("fifo");
