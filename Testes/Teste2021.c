@@ -70,6 +70,8 @@ int servidor() {
 
 // Exercício 2
 
+#define AGE_SIZE 4
+
 int vacinados(char * regiao, int idade) {
 
     int pipe_fd[2];
@@ -88,8 +90,8 @@ int vacinados(char * regiao, int idade) {
         dup2(pipe_fd[1], STDOUT_FILENO);
         close(pipe_fd[1]);
 
-        char idade_string[4];
-        snprintf(idade_string, 4, "%d", idade);
+        char idade_string[AGE_SIZE];
+        snprintf(idade_string, AGE_SIZE, "%d", idade);
 
         execlp("grep", "grep", idade_string, regiao, NULL);
         perror("execlp");
