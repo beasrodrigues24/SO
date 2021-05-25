@@ -46,7 +46,7 @@ int servidor() {
         while((parsed = parse_entry(&buffer))) {
 
             snprintf(write_string, ENTRY_SIZE, "%s %s %s\n", parsed[0], parsed[1], parsed[2]);
-            fd_write = open(parsed[2], O_CREAT | O_TRUNC | O_WRONLY, 0644);
+            fd_write = open(parsed[2], O_CREAT | O_APPEND | O_WRONLY, 0644);
             if (fd_write < 0) {
 
                 perror("open");
