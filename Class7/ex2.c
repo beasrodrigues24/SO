@@ -19,16 +19,14 @@ int main(int argc, const char * argv[]) {
     int pids[total_files];
     pid_t pid;
 
+
     for (int i = 0; i < total_files; i++) {
 
         if ((pid = fork()) == 0) {
 
-            if (execlp("grep", "grep", argv[1], filenames[i], NULL) < 0) {
-
-                perror("execlp");
-                exit(1);
-
-            }
+            execlp("grep", "grep", argv[1], filenames[i], NULL);
+            perror("execlp");
+            _exit(1);
 
         }
 
@@ -58,13 +56,15 @@ int main(int argc, const char * argv[]) {
             if(waitpid(pids[i], &status, 0) > 0) {
 
                 if(WIFEXITED(status)) 
-                    printf("grep %d finished.\n", pids[i]);
+                    printf("Grep %d finished.\n", pids[i]);
                 else 
-                    printf("grep %d was killed.\n", pids[i]);
+                    printf("Grep %d was killed.\n", pids[i]);
                 
             }
 
         }
+        else if (pid == pids[i]) 
+            printf("Process %d found word. File: %s\n", pid, filenames[i]);
 
     }
 

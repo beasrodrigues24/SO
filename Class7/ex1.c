@@ -26,6 +26,7 @@ void sigquit_handler(int signum) {
     snprintf(buffer, BUFFER_SIZE, "Received SIGQUIT. Runtime = %d seconds.\n", seconds);
     write(STDOUT_FILENO, buffer, strlen(buffer));
     free(buffer);
+    exit(0);
 
 }
 
@@ -66,7 +67,8 @@ int main() {
 
     alarm(1);
 
-    while(1);
+    while(1) 
+        pause();
 
     return 0;
 
