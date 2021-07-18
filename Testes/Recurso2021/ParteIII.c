@@ -15,7 +15,6 @@ int pids[N_EXEC];
 
 void timeout_handler() {
 
-    int status;
     for (int i = 0; i < N_EXEC; i++) {
 
         if (pids[i] > 0) 
@@ -66,7 +65,7 @@ int main() {
     for (int i = 0; i < N_EXEC; i++) {
 
         wait(&status);
-        if (WEXITSTATUS(status) == 0 || WEXITSTATUS(status) == 1) 
+        if (WEXITSTATUS(status) == 0 || WEXITSTATUS(status) == 1) // Grep returns 0 if found, 1 if not found
             normal_exit++;
 
     }
