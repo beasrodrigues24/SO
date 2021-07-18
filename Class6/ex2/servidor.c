@@ -36,7 +36,7 @@ int main() {
         while ((bytes_read = read(fd_fifo, buffer, BUFFER_SIZE)) > 0) {
 
 
-            if (write(fd_log, buffer, bytes_read + 1) <= 0) {
+            if (write(fd_log, buffer, bytes_read) <= 0) {
 
                 perror("write");
                 exit(1);
