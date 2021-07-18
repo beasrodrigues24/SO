@@ -54,7 +54,7 @@ int main() {
     for (int i = 0; i < N_EXEC; i++) 
         if ((pids[i] = fork()) == 0) {
 
-            execlp("cat", "cat", "beeMovieScript.txt", NULL); // cmd no work in linux F so switched to a cat of a big file
+            execlp("grep", "grep", "\"COCKPIT\"", "beeMovieScript.txt", NULL); // cmd no work in linux F so switched to grep on a big file
             perror("execlp");
             _exit(1);
 
@@ -66,7 +66,7 @@ int main() {
     for (int i = 0; i < N_EXEC; i++) {
 
         wait(&status);
-        if (WEXITSTATUS(status) == 0) 
+        if (WEXITSTATUS(status) == 0 || WEXITSTATUS(status) == 1) 
             normal_exit++;
 
     }
