@@ -1,15 +1,24 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 
+#define FIFO_NAME "fifo"
 #define BUFFER_SIZE 1024
 
-int servidor() {
+int main() {
 
-    int fd_log = open("log.txt", O_CREAT | O_WRONLY, 0644);
+    if (mkfifo(FIFO_NAME, 0644) < 0) {
+
+        perror("mkfifo");
+        exit(1);
+
+    }
+
+    int fd_log = open("log.txt", O_CREAT | O_APPEND | O_WRONLY, 0644);
     if (fd_log == -1) {
 
         perror("open");
@@ -17,43 +26,33 @@ int servidor() {
 
     }
 
-    ssize_t bytes_read, bytes_written;
-    char * buffer = malloc(sizeof(char) * BUFFER_SIZE);
+    ssize_t bytes_read;
+    
 
     int fd_fifo;
-    while((fd_fifo = open("fifo", O_RDONLY)) > 0) {
+    while((fd_fifo = open(FIFO_NAME, O_RDONLY)) > 0) {
 
-        while ((bytes_read = read(fd_fifo, buffer, BUFFER_SIZE)) > 0) 
+        char * buffer = malloc(sizeof(char) * BUFFER_SIZE);
+        while ((bytes_read = read(fd_fifo, buffer, BUFFER_SIZE)) > 0) {
 
-            if ((bytes_written = write(fd_log, buffer, bytes_read)) <= 0) {
+
+            if (write(fd_log, buffer, bytes_read + 1) <= 0) {
 
                 perror("write");
                 exit(1);
 
             }
-        
+
+        }
 
         close(fd_fifo);
+        free(buffer);
 
     }
 
     close(fd_log);
-    free(buffer);
+    
 
-    return 0;
-
-}
-
-int main() {
-
-    if (mkfifo("fifo", 0644) < 0) {
-
-        perror("fifo");
-        exit(1);
-
-    }
-
-    servidor();
     return 0;
 
 }
