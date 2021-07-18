@@ -18,15 +18,8 @@ void timeout_handler() {
     int status;
     for (int i = 0; i < N_EXEC; i++) {
 
-        if (pids[i] > 0) {
-
+        if (pids[i] > 0) 
             kill(pids[i], SIGKILL);
-
-            if (waitpid(pids[i], &status, 0) > 0) 
-                if (WIFEXITED(status)) 
-                    normal_exit++;
-
-        }
 
     }
 
@@ -61,7 +54,7 @@ int main() {
     for (int i = 0; i < N_EXEC; i++) 
         if ((pids[i] = fork()) == 0) {
 
-            execlp("ls", "ls", NULL); // cmd no work in linux F
+            execlp("cat", "cat", "beeMovieScript.txt", NULL); // cmd no work in linux F so switched to a cat of a big file
             perror("execlp");
             _exit(1);
 
@@ -69,9 +62,16 @@ int main() {
 
     alarm(TIME_LIMIT);
     
-    while(1) {
-        ;
+    int status;
+    for (int i = 0; i < N_EXEC; i++) {
+
+        wait(&status);
+        if (WEXITSTATUS(status) == 0) 
+            normal_exit++;
+
     }
+
+    printf("Normal exits: %d\n", normal_exit);
 
     return 0;
 
