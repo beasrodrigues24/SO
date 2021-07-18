@@ -8,14 +8,6 @@
 #include <sys/types.h>
 
 
-/*
-    DISCLAIMER 
-
-    * Trata-se de uma resolução provisória que provavelmente não está certa
-    * Aberto a sugestões de correção
-
-*/
-
 // Exercício 1
 
 #define BUFFER_SIZE 1024
@@ -90,16 +82,15 @@ int vacinados(char * regiao, int idade) {
         dup2(pipe_fd[1], STDOUT_FILENO);
         close(pipe_fd[1]);
 
-        char idade_string[AGE_SIZE];
-        snprintf(idade_string, AGE_SIZE, "%d", idade);
-
+        char * idade_string = malloc(AGE_SIZE);
+        snprintf(idade_string, AGE_SIZE, "\"%d\"", idade);
         execlp("grep", "grep", idade_string, regiao, NULL);
         perror("execlp");
         _exit(1);
 
     }
 
-    close(pipe_fd[0]);
+    close(pipe_fd[1]);
 
     if (fork() == 0) {
 
@@ -114,18 +105,15 @@ int vacinados(char * regiao, int idade) {
 
     }
 
+    char * value = malloc(BUFFER_SIZE);
+    read(pipe_fd[0], value, BUFFER_SIZE);
+
     close(pipe_fd[0]);
 
-    int count = 0, status;
-
-    for (int i = 0; i < 2; i++) {
-
-        wait(&status);
-        count += WEXITSTATUS(status);
-
-    }
-
-    return count;
+    wait(NULL);
+    wait(NULL);
+  
+    return atoi(value);
 
 }
 
@@ -154,21 +142,18 @@ bool vacinado(char * cidadao) {
     }
 
     int status;
-    bool not_found = true;
+    int not_found = 1;
 
     for (int i = 0; not_found && (pid = wait(&status)); i++) 
-        if (!WEXITSTATUS(status)) 
-            not_found = false;
-
-    if (!not_found) {
-
-        for (int i = 0; i < N_REGIONS; i++) 
-            if (pids[i] != pid && pids[i] > 0) 
-                kill(pids[i], SIGKILL);
-
-    }
+        not_found = WEXITSTATUS(status);
     
-    return !not_found;
+    for (int i = 0; i < N_REGIONS; i++) 
+        if (pids[i] != pid && pids[i] > 0) 
+            kill(pids[i], SIGKILL);
+        else if (pids[i] == pid) 
+            printf("Found word in %s\n", reg[i]);
+    
+    return (not_found ? false : true);
 
 }
 
