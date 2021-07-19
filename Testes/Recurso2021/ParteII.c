@@ -77,7 +77,7 @@ int main(int argc, char * argv[]) {
             dup2(pipe_fd[1][1], STDOUT_FILENO);
             close(pipe_fd[1][1]);
             
-            execlp("cut", "cut", "-d\" \"", "-f4", NULL);
+            execlp("cut", "cut", "-d ", "-f4", NULL);
             perror("Exec");
             _exit(1);
 
@@ -85,6 +85,10 @@ int main(int argc, char * argv[]) {
 
         close(pipe_fd[0][0]);
         close(pipe_fd[1][1]);
+
+        wait(NULL);
+        wait(NULL);
+        wait(NULL);
 
         char * buffer = malloc(BUFFER_SIZE);
         ssize_t bytes_read = read(pipe_fd[1][0], buffer, BUFFER_SIZE);
