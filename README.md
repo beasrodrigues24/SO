@@ -1,3 +1,3 @@
 # SO
 
-Exercises from Operative Systems class in Minho University
+Exercises and test resolutions from Operative Systems class in Minho University
