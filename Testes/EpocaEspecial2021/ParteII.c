@@ -47,6 +47,7 @@ int main(int argc, char * argv[]) {
     }
 
     int offset;
+    int change = 1;
     while (read(pipe_fd[0], &offset, 8) > 0) {
 
         lseek(fd_wrt, offset, SEEK_CUR);
@@ -56,12 +57,12 @@ int main(int argc, char * argv[]) {
             exit(-1);
 
         }
-
+        change = 0;
     }
 
     close(pipe_fd[0]);
     close(fd_wrt);
 
-    return 0;
+    return change;
 
 }
