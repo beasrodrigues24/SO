@@ -38,6 +38,20 @@ int main(int argc, char * argv[]) {
 
     }
 
+    if (signal(SIGINT, sigint_handler) == SIG_ERR) {
+
+        perror("signal");
+        exit(-1);
+
+    }
+
+    if (signal(SIGALRM, sigalrm_handler) == SIG_ERR) {
+
+        perror("signal");
+        exit(-1);
+
+    }
+
     npids = argc - 3;
     for (int i = 0; i < npids; i++) 
         if ((pids[i] = fork()) == 0) {
